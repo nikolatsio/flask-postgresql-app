@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, render_template, request
-from flask_migrate import Migrate
+#from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -22,7 +22,7 @@ app.config.update(
 db = SQLAlchemy(app)
 
 # initialize database migration management
-migrate = Migrate(app, db)
+#migrate = Migrate(app, db)
 
 
 @app.route('/')
