@@ -5,11 +5,28 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 
+service_name = os.getenv('DATABASE_SERVICE_NAME', '').upper().replace('-', '_')
+    if service_name:
+        engine = engines.get(os.getenv('DATABASE_ENGINE'), engines['sqlite'])
+    else:
+        engine = engines['sqlite']
+    name = os.getenv('DATABASE_NAME')
+    if not name and engine == engines['sqlite']:
+        name = os.path.join(settings.BASE_DIR, 'db.sqlite3')
+    return {
+        'ENGINE': engine,
+        'NAME': name,
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('{}_SERVICE_HOST'.format(service_name)),
+        'PORT': os.getenv('{}_SERVICE_PORT'.format(service_name)),
+    }
+
 database_uri = 'postgresql+psycopg2://{dbuser}:{dbpass}@{dbhost}/{dbname}'.format(
-    dbuser=os.environ['DBUSER'],
-    dbpass=os.environ['DBPASS'],
-    dbhost=os.environ['DBHOST'],
-    dbname=os.environ['DBNAME']
+    dbuser=os.getenv('DATABASE_USER'),
+    dbpass=os.getenv('DATABASE_PASSWORD'),
+    dbhost=os.getenv('{}_SERVICE_HOST'.format(service_name)),
+    dbname=os.getenv('DATABASE_NAME')
 )
 
 app = Flask(__name__)
